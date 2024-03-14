@@ -12,7 +12,7 @@ app.use(cors());
 app.use("/auth",userRouter);
 app.use("/recipes",recipesRouter);
 app.get("/api-check",(req, res) => {
-    res.json("API is working fine..1");
+    res.json("API is working fine..");
 });
 mongoose.connect("mongodb+srv://hmewada74:Mongodb0249@recipes.deif9w8.mongodb.net/recipes?retryWrites=true&w=majority&appName=recipes");
 
