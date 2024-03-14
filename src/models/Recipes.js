@@ -6,7 +6,6 @@ const RecipeSchema = new mongoose.Schema({
     instructions : { type : String, required : true },
     imageUrl : { type : String, required : true },
     cookingTime : { type : Number, required : true },
-    isActive : { type : Boolean, required : true },
     userId : { type : mongoose.Schema.Types.ObjectId, ref : "users", required : true }
 });
 

@@ -8,7 +8,8 @@ const router = express.Router();
 // for getting all the reipes
 router.get("/", async (req, res) => {
     try {
-        const response = await RecipesModel.find({ isActive : true });
+        const response = await RecipesModel.find();
+        // const response = await RecipesModel.find({ isActive : true });
         if (response != "") {
             return res.json({
                 status: true,
@@ -70,7 +71,7 @@ router.put("/", verifyToken, async (req, res) => {
             } else {
                 return res.json({
                     status: false,
-                    message: "Recipe not saved.",
+                    message: "Something went wrong.",
                 });
             } 
         } else{
@@ -126,6 +127,92 @@ router.get("/saved-recipes/:userId", verifyToken, async (req, res) => {
             return res.json({
                 status: false,
                 message: "No Recipe found."
+            });
+        }
+    } catch (error) {
+        return res.json({
+            status: false,
+            message: "Error caught is API : " + error.message
+        });
+    }
+});
+// for getting all the reipes
+router.get("/:userId", async (req, res) => {
+    // return res.json(req.params.userId)
+    try {
+        const response = await RecipesModel.find({ userId : req.params.userId });
+        // const response = await RecipesModel.find({ isActive : true });
+        if (response != "") {
+            return res.json({
+                status: true,
+                message: "Recipes were found.",
+                data : response
+            });
+        } else {
+            return res.json({
+                status: false,
+                message: "No recipes were found."
+            });
+        }
+    } catch (error) {
+        return res.json({
+            status: false,
+            message: "Error caught is API : " + error.message
+        });
+    }
+});
+// for remove the single recipe
+router.post("/remove", verifyToken, async (req, res) => {
+    try {
+        const { recipeId, userId } = req.body;
+        const recipe = await RecipesModel.findById(recipeId);
+        if (recipe) {
+            const user = await UserModel.findById(userId);
+            const savedRecipes = user.savedRecipes;
+            const remainingRecipes = savedRecipes.filter((recipe) => recipe != recipeId);
+            user.savedRecipes = remainingRecipes;
+            const response = await user.save();
+            if (response) {
+                return res.json({
+                    status: true,
+                    message: "Recipe removed successfully.",
+                    removedRecipe : recipeId
+                });
+            } else {
+                return res.json({
+                    status: false,
+                    message: "Something went wrong.",
+                });
+            } 
+        } else{
+            return res.json({
+                status: false,
+                message: "Recipe not found."
+            });
+        }
+    } catch (error) {
+        return res.json({
+            status: false,
+            message: "Error caught is API : " + error.message
+        });
+    }
+});
+// for edit recipe
+router.post("/edit", async (req, res) => {
+    // return res.json(req.params.userId)
+    try {
+        const response = await RecipesModel.findById(req.params.recipeId);
+        // const response = await RecipesModel.find({ isActive : true });
+        if (response != "") {
+            return res.json({
+                status: true,
+                message: "Recipe were found.",
+                data : response
+            });
+        } else {
+            return res.json({
+                status: false,
+                message: "No recipes were found."
             });
         }
     } catch (error) {
