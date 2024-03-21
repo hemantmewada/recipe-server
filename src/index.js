@@ -8,7 +8,12 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-
+app.get("/", (req, res) => {
+    return res.json({
+        status: true,
+        message: "This domains api managed by @hemantmewada"
+    });
+})
 app.use("/auth",userRouter);
 app.use("/recipes",recipesRouter);
 app.get("/api-check",(req, res) => {
